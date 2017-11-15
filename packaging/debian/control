@@ -1,4 +1,4 @@
-Source: cvmfs-config-autofs
+Source: cvmfs-setup-autofs
 Maintainer: Dave Dykstra <dwd@fnal.gov>
 Section: utils
 Priority: extra

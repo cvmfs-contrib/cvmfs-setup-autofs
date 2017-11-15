@@ -1,4 +1,4 @@
-cvmfs-config-autofs (0.1.0) stable; urgency=low
+cvmfs-setup-autofs (0.1.0) stable; urgency=low
 
   * Place holder; this file is generated in build.sh
 

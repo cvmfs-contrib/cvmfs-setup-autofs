@@ -6,7 +6,7 @@ set -e
 # This script used for package creation and debugging
 #
 
-PKG=cvmfs-config-osg
+PKG=cvmfs-setup-autofs
 
 usage() {
   echo "Sample script that builds the $PKG debian package from source"

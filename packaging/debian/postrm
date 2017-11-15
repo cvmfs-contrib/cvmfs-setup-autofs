@@ -1,5 +1,5 @@
 #!/bin/sh -e
-# post-removal script for cvmfs-config-osg
+# post-removal script for cvmfs-setup-autofs
 #
 # see: dh_installdeb(1)
 
