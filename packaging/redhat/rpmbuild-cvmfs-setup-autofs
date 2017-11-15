@@ -1,0 +1,35 @@
+#!/bin/bash
+# This script is for building development rpms
+# It assumes that ~/.rpmmacros has %_topdir set to rpmbuild area
+# and that the source code is in ~/work/`echo $0|sed 's/.*build-//'`
+
+if [ $# != 0 ]; then
+    echo "No parameters accepted" >&2
+    exit 1
+fi
+
+if [ ! -f ~/.rpmmacros ]; then
+    echo "No ~/.rpmmacros found" >&2
+    exit 1
+fi
+RPMBUILD="`sed -n 's/^%_topdir[   ]*//p' ~/.rpmmacros`"
+if [ -z "$RPMBUILD" ]; then
+    echo "No %_topdir found in ~/.rpmmacros" >&2
+    exit 1
+fi
+
+set -ex
+PKG="`echo $0|sed 's/.*build-//'`"
+SRCDIR=$HOME/work/$PKG
+cd $SRCDIR
+SPEC=packaging/redhat/$PKG.spec
+VERSION="`sed -n 's/^Version: //p' $SPEC`"
+cd $RPMBUILD/SOURCES
+ln -fns $SRCDIR $PKG-$VERSION
+tar chvf $PKG-$VERSION.tar.gz --exclude .git $PKG-$VERSION
+rm -f $PKG-$VERSION
+cd $RPMBUILD/SPECS
+ln -fs $SRCDIR/$SPEC .
+rpmbuild -ba $PKG.spec
+rm ../SOURCES/$PKG-$VERSION.tar.gz
+rm -f $PKG.spec
