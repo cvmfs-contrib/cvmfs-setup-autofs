@@ -16,8 +16,10 @@
 # for details, see http://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
 
-if deb-systemd-helper --quiet is-enabled autofs.service; then
-  deb-systemd-invoke try-reload-or-restart autofs.service
+if [ -x "/usr/bin/deb-systemd-helper" ]; then
+	if deb-systemd-helper --quiet is-enabled autofs.service; then
+		deb-systemd-invoke try-reload-or-restart autofs.service
+	fi
 fi
 
 # dh_installdeb will replace this with shell code automatically

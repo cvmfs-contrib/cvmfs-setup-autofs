@@ -8,8 +8,7 @@ Homepage: http://github.com/opensciencegrid/cvmfs-setup-autofs
 
 Package: cvmfs-setup-autofs
 Architecture: all
-Depends: ${misc:Depends}
-Recommends: autofs (>= 5.1.2)
+Depends: ${misc:Depends}, cvmfs, autofs (>= 5.1.2)
 Description: Configure the CernVM File System to mount with autofs
  The CernVM File System is a client for accessing remote file systems
  using HTTP(S). This package provides the configuration to ensure that
