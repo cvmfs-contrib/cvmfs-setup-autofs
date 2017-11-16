@@ -44,7 +44,7 @@ make install DESTDIR=$RPM_BUILD_ROOT
 /bin/systemctl try-reload-or-restart autofs.service
 %endif
 %if %{with init_sysv}
-if /bin/grep -e '^/cvmfs[[:space:]]\+/etc/auto.cvms$' /etc/auto.master; then
+if /bin/grep -e '^/cvmfs[[:space:]]\+/etc/auto.cvmfs$' /etc/auto.master; then
 	echo "/cvmfs	/etc/auto.cvmfs" >> /etc/auto.master
 fi
 %endif
@@ -55,7 +55,7 @@ fi
 /bin/systemctl try-reload-or-restart autofs.service
 %endif
 %if %{with init_sysv}
-/bin/sed -i -e '\,^/cvmfs[[:space:]]\+/etc/auto.cvmfs$,d' cvmfs.autofs
+/bin/sed -i -e '\,^/cvmfs[[:space:]]\+/etc/auto.cvmfs$,d' /etc/auto.master
 %endif
 
 %files
