@@ -25,7 +25,7 @@ Requires(postun): systemd
 Requires(post):   coreutils 
 Requires(post):   grep 
 Requires(postun): sed
-%fi
+%endif
 
 %prep
 %setup
