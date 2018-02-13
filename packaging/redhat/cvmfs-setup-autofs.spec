@@ -36,7 +36,6 @@ Configure the CernVM File System to mount with autofs
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
-%endif
 
 %post
 %if %{with init_systemd}
