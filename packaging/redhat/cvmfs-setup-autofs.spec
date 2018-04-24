@@ -22,8 +22,8 @@ Requires(post):   systemd
 Requires(postun): systemd
 %endif
 %if %{with init_sysv}
-Requires(post):   coreutils 
-Requires(post):   grep 
+Requires(post):   coreutils
+Requires(post):   grep
 Requires(postun): sed
 %endif
 
@@ -64,5 +64,5 @@ fi
 %endif
 
 %changelog
-* Wed Nov 15 2017 Tom Downes <downes@uwm.edu> - 1.0-0 
+* Wed Nov 15 2017 Tom Downes <downes@uwm.edu> - 1.0-0
 -  First commit to manage autofs under /etc/auto.master.d
