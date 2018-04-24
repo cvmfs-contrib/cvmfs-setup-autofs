@@ -16,6 +16,12 @@
 # for details, see http://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
 
+AUTOFS_MAP_ENTRY_REGEX="^[[:space:]]*/cvmfs[[:space:]]+/etc/auto.cvmfs[[:space:]]*"
+
+if grep -qEe $AUTOFS_MAP_ENTRY_REGEX /etc/auto.master; then
+	sed -i -r -e "\,${AUTOFS_MAP_ENTRY_REGEX},d" /etc/auto.master
+fi
+
 if [ -x "/usr/bin/deb-systemd-helper" ]; then
 	if deb-systemd-helper --quiet is-enabled autofs.service; then
 		deb-systemd-invoke try-reload-or-restart autofs.service

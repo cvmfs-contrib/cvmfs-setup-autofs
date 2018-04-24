@@ -4,7 +4,7 @@ Section: utils
 Priority: extra
 Standards-Version: 3.9.6
 Build-Depends: debhelper (>= 9), dh-systemd
-Homepage: http://github.com/opensciencegrid/cvmfs-setup-autofs
+Homepage: http://github.com/lscsoft/cvmfs-setup-autofs
 
 Package: cvmfs-setup-autofs
 Architecture: all

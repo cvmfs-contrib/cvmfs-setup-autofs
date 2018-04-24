@@ -1,10 +1,9 @@
-%if 0%{?fedora} >= 15 || 0%{?rhel} >= 7
-%bcond_without init_systemd
-%bcond_with init_sysv
-%else
-%bcond_with init_systemd
-%bcond_without init_sysv
-%endif
+%global autofs_map_entry "/cvmfs	/etc/auto.cvmfs"
+%global autofs_map_entry_regex ^[[:space:]]*/cvmfs[[:space:]]+/etc/auto.cvmfs[[:space:]]*
+%define is_fedora_auto_master_d %(test 0%{?fedora} -ne 0 && test %{?fedora} -ge 15 && echo 1 || echo 0)
+%define is_rhel_auto_master_d %(test 0%{?rhel} -ne 0 && test %{?rhel} -ge 7 && echo 1 || echo 0)
+%define is_centos_auto_master_d %(test 0%{?centos} -ne 0 && test %{?centos} -ge 7 && echo 1 || echo 0)
+%define is_auto_master_d %( test %{is_rhel_auto_master_d} -eq 1 || test %{is_centos_auto_master_d} = 1 || test %{is_fedora_auto_master_d} = 1 && echo 1 || echo 0)
 
 Summary: Configure the CernVM File System to mount with autofs
 Name: cvmfs-setup-autofs
@@ -15,15 +14,16 @@ BuildArch: noarch
 Group: Applications/System
 License: BSD
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildRequires:    coreutils
 Requires:         cvmfs
 Requires:         autofs
-%if %{with init_systemd}
-Requires(post):   systemd
-Requires(postun): systemd
+Requires(post):   grep
+
+%if %{is_auto_master_d}
+Requires(post): sed
 %endif
-%if %{with init_sysv}
-Requires(post):   coreutils 
-Requires(post):   grep 
+
+%if ! %{is_auto_master_d}
 Requires(postun): sed
 %endif
 
@@ -37,32 +37,39 @@ Configure the CernVM File System to mount with autofs
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 
-%post
-%if %{with init_systemd}
-# this is a no-op if the service is not running
-#/bin/systemctl try-reload-or-restart autofs.service
+%if %{is_auto_master_d}
+mkdir -p ${RPM_BUILD_ROOT}/%{_sysconfdir}/auto.master.d
+ln -sf %{_datarootdir}/%{name}/cvmfs.autofs ${RPM_BUILD_ROOT}/%{_sysconfdir}/auto.master.d/cvmfs.autofs
 %endif
-%if %{with init_sysv}
-if /bin/grep -e '^/cvmfs[[:space:]]\+/etc/auto.cvmfs$' /etc/auto.master; then
-	echo "/cvmfs	/etc/auto.cvmfs" >> /etc/auto.master
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%post
+%if %{is_auto_master_d}
+if grep -qEe %{autofs_map_entry_regex} /etc/auto.master; then
+	sed -i -r -e '\,%{autofs_map_entry_regex},d' /etc/auto.master
+fi
+%else
+if ! grep -qEe %{autofs_map_entry_regex} /etc/auto.master; then
+	echo %{autofs_map_entry} >> /etc/auto.master
 fi
 %endif
 
+%if ! %{is_auto_master_d}
 %postun
-%if %{with init_systemd}
-# this is a no-op if the service is not running
-#/bin/systemctl try-reload-or-restart autofs.service
-%endif
-%if %{with init_sysv}
-/bin/sed -i -e '\,^/cvmfs[[:space:]]\+/etc/auto.cvmfs$,d' /etc/auto.master
+sed -i -r -e '\,%{autofs_map_entry_regex},d' /etc/auto.master
 %endif
 
 %files
-%if 0%{?fedora} >= 15 || 0%{?rhel} >= 7
+%if %{is_auto_master_d}
+%{_datarootdir}/%{name}
 %dir %{_sysconfdir}/auto.master.d
 %{_sysconfdir}/auto.master.d/cvmfs.autofs
+%else
+%exclude %{_datarootdir}/%{name}
 %endif
 
 %changelog
-* Wed Nov 15 2017 Tom Downes <downes@uwm.edu> - 1.0-0 
+* Wed Nov 15 2017 Tom Downes <downes@uwm.edu> - 1.0-0
 -  First commit to manage autofs under /etc/auto.master.d
