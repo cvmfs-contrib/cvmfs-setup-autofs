@@ -38,22 +38,14 @@ rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 
 %post
-%if %{with init_systemd}
-# this is a no-op if the service is not running
-#/bin/systemctl try-reload-or-restart autofs.service
-%endif
-%if %{with init_sysv}
+%if 0%{?fedora} < 15 || 0%{?rhel} < 7
 if /bin/grep -e '^/cvmfs[[:space:]]\+/etc/auto.cvmfs$' /etc/auto.master; then
 	echo "/cvmfs	/etc/auto.cvmfs" >> /etc/auto.master
 fi
 %endif
 
 %postun
-%if %{with init_systemd}
-# this is a no-op if the service is not running
-#/bin/systemctl try-reload-or-restart autofs.service
-%endif
-%if %{with init_sysv}
+%if 0%{?fedora} < 15 || 0%{?rhel} < 7
 /bin/sed -i -e '\,^/cvmfs[[:space:]]\+/etc/auto.cvmfs$,d' /etc/auto.master
 %endif
 
