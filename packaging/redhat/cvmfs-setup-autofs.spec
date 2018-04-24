@@ -53,6 +53,8 @@ fi
 %if 0%{?fedora} >= 15 || 0%{?rhel} >= 7
 %dir %{_sysconfdir}/auto.master.d
 %{_sysconfdir}/auto.master.d/cvmfs.autofs
+%else
+%exclude %{_sysconfdir}/auto.master.d/cvmfs.autofs
 %endif
 
 %changelog
