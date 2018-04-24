@@ -36,12 +36,11 @@ Configure the CernVM File System to mount with autofs
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
-%endif
 
 %post
 %if %{with init_systemd}
 # this is a no-op if the service is not running
-/bin/systemctl try-reload-or-restart autofs.service
+#/bin/systemctl try-reload-or-restart autofs.service
 %endif
 %if %{with init_sysv}
 if /bin/grep -e '^/cvmfs[[:space:]]\+/etc/auto.cvmfs$' /etc/auto.master; then
@@ -52,7 +51,7 @@ fi
 %postun
 %if %{with init_systemd}
 # this is a no-op if the service is not running
-/bin/systemctl try-reload-or-restart autofs.service
+#/bin/systemctl try-reload-or-restart autofs.service
 %endif
 %if %{with init_sysv}
 /bin/sed -i -e '\,^/cvmfs[[:space:]]\+/etc/auto.cvmfs$,d' /etc/auto.master
