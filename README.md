@@ -1,10 +1,15 @@
 # cvmfs-setup-autofs
 RedHat and Debian Packages that configure the CernVM File System to mount with autofs
 
-## RHEL7+ and Debian 8+
-On these systems, the package will install a file under /etc/auto.master.d that automatically
-configures autofs. After installation and removal it will issue `systemctl reload autofs.service`
-to cause autofs to re-load its mount maps.
+## Debian 8+
+The package will install a file under /etc/auto.master.d that appropriately
+configures autofs. After installation and removal it will issue
+`systemctl reload autofs.service` to cause autofs to reload its mount maps.
+
+## RHEL7
+The package will install a file under /etc/auto.master.d that appropriately
+configures autofs. The administrator must run `systemctl reload autofs.service`
+to cause autofs to reload its mount maps.
 
 ## RHEL6
 RHEL6-based systems are not aware of /etc/auto.master.d. On these systems, the script
