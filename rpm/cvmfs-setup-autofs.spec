@@ -5,19 +5,20 @@
 %define is_centos_auto_master_d %(test 0%{?centos} -ne 0 && test %{?centos} -ge 7 && echo 1 || echo 0)
 %define is_auto_master_d %( test %{is_rhel_auto_master_d} -eq 1 || test %{is_centos_auto_master_d} = 1 || test %{is_fedora_auto_master_d} = 1 && echo 1 || echo 0)
 
-Summary: Configure the CernVM File System to mount with autofs
-Name: cvmfs-setup-autofs
-Version: 1.0
-Release: 0%{?dist}
-Source: %{name}-%{version}.tar.gz
-BuildArch: noarch
-Group: Applications/System
-License: BSD
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires:    coreutils
-Requires:         cvmfs
-Requires:         autofs
-Requires(post):   grep
+Summary:        Configure the CernVM File System to mount with autofs
+Name:           cvmfs-setup-autofs
+Version:        1
+%define         release_prefix 1
+Release:        %{release_prefix}%{?dist}
+Source:         %{name}-%{version}.tar.gz
+BuildArch:      noarch
+Group:          Applications/System
+License:        BSD
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildRequires:  coreutils
+Requires:       cvmfs
+Requires:       autofs
+Requires(post): grep
 
 %if %{is_auto_master_d}
 Requires(post): sed
